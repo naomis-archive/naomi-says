@@ -58,6 +58,14 @@ p {
 	top: 250px;
 	transform: rotate(-90deg);
 }
+
+span {
+	position: fixed;
+	bottom: 100px;
+	left: 20px;
+	font-size: 35px;
+	color: var(--text);
+}
 </style>
 </head>
 <body>
@@ -66,4 +74,5 @@ p {
     <div class="point"></div>
 </div>
 <img src="https://cdn.nhcarrigan.com/projects/naomi-says.png">
+<span>Make your own! https://chat.naomi.lgbt</span>
 </body>`;
