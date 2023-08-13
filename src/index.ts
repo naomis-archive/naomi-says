@@ -5,8 +5,8 @@ import { errorHandler } from "./utils/errorHandler";
 import { loadCommands } from "./utils/loadCommands";
 import { logHandler } from "./utils/logHandler";
 import { registerCommands } from "./utils/registerCommands";
-import { validateEnv } from "./utils/validateEnv";
 import { isGuildCommandCommand } from "./utils/typeGuards";
+import { validateEnv } from "./utils/validateEnv";
 
 (async () => {
   try {
