@@ -1,7 +1,11 @@
-import { SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, SlashCommandBuilder } from "discord.js";
+import nodeHtmlToImage from "node-html-to-image";
 
+import { Html } from "../config/Html";
 import { Command } from "../interfaces/Command";
 import { errorHandler } from "../utils/errorHandler";
+import { isValidHex } from "../utils/isValidHex";
+import { prefixHex } from "../utils/prefixHex";
 
 export const say: Command = {
   data: new SlashCommandBuilder()
@@ -18,21 +22,49 @@ export const say: Command = {
     .addStringOption((option) =>
       option
         .setName("colour")
-        .setDescription(
-          "The CSS-compatible colour to use for the text. Colour name, hex code, or rgb value."
-        )
+        .setDescription("The hex string to use for the text.")
+        .setMinLength(6)
+        .setMaxLength(7)
     )
     .addStringOption((option) =>
       option
         .setName("background")
-        .setDescription(
-          "The CSS-compatible colour to use for the background. Colour name, hex code, or rgb value."
-        )
+        .setDescription("The hex string to use for the background.")
+        .setMinLength(6)
+        .setMaxLength(7)
     ),
   run: async (bot, interaction) => {
     try {
+      const message = interaction.options.getString("message", true);
+      const colour = interaction.options.getString("colour");
+      const background = interaction.options.getString("background");
+
+      const html = Html.replace(
+        "{text}",
+        isValidHex(colour) ? prefixHex(colour) : "pink"
+      )
+        .replace(
+          "{background}",
+          isValidHex(background) ? prefixHex(background) : "purple"
+        )
+        .replace("{message}", message)
+        .replace("{size}", message.length > 100 ? "25" : "35");
+      const image = await nodeHtmlToImage({
+        html,
+        selector: "body",
+      });
+      if (!(image instanceof Buffer)) {
+        await interaction.editReply({
+          content:
+            "An error occurred while generating the image. Please try again later.",
+        });
+        return;
+      }
+      const attachment = new AttachmentBuilder(image, {
+        name: "say.png",
+      }).setDescription(`Naomi says: ${message}`);
       await interaction.editReply({
-        content: "Coming soon!",
+        files: [attachment],
       });
     } catch (err) {
       await errorHandler(bot, "say command", err);

@@ -17,24 +17,28 @@ import { validateEnv } from "./utils/validateEnv";
     await loadCommands(bot);
 
     bot.on(Events.InteractionCreate, async (interaction) => {
-      if (!interaction.isChatInputCommand()) {
-        return;
+      try {
+        if (!interaction.isChatInputCommand()) {
+          return;
+        }
+        await interaction.deferReply();
+        if (!isGuildCommandCommand(interaction)) {
+          await interaction.editReply({
+            content: "You can only run this in a guild.",
+          });
+          return;
+        }
+        const target = bot.commands.find(
+          (c) => c.data.name === interaction.commandName
+        );
+        if (!target) {
+          await interaction.editReply({ content: "Command not found." });
+          return;
+        }
+        await target.run(bot, interaction);
+      } catch (err) {
+        await errorHandler(bot, "interaction create event", err);
       }
-      await interaction.deferReply();
-      if (!isGuildCommandCommand(interaction)) {
-        await interaction.editReply({
-          content: "You can only run this in a guild.",
-        });
-        return;
-      }
-      const target = bot.commands.find(
-        (c) => c.data.name === interaction.commandName
-      );
-      if (!target) {
-        await interaction.editReply({ content: "Command not found." });
-        return;
-      }
-      await target.run(bot, interaction);
     });
 
     bot.on(Events.ClientReady, async () => {

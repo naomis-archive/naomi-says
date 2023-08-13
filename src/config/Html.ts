@@ -1,4 +1,6 @@
 export const Html = `
+<head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comic%20Neue">
 <style>
 :root {
 	--text: {text};
@@ -6,16 +8,21 @@ export const Html = `
 }
 
 body {
-  width: 1300px;
+    width: 1300px;
+	max-width: 1300px;
 	height: 500px;
+	max-height: 500px;
 	background-color: var(--bg);
 	font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", "Comic Sans", cursive;
+	margin: 0;
+	padding: 0;
 }
 
 img {
-  height: 500px;
-	position: absolute;
+    height: 500px;
+	position: fixed;
 	right: 0;
+	top: 0;
 	bottom: 0;
 }
 
@@ -27,13 +34,16 @@ div {
 	text-align: center;
 	height: 400px;
 	border-radius: 10px;
-	font-size: 20pt;
+	font-size: {size}pt;
 	display: grid;
 }
 
 p {
-  margin: auto;
+	margin: auto;
 	color: var(--text);
+	word-break: break-word;
+	width: 100%;
+	max-width: 100%
 }
 
 .point{
@@ -49,9 +59,10 @@ p {
 	transform: rotate(-90deg);
 }
 </style>
+</head>
 <body>
 <div class="bubble">
-	<p>Here is some text.</p>
+	<p>{message}</p>
     <div class="point"></div>
 </div>
 <img src="https://cdn.nhcarrigan.com/projects/naomi-says.png">
